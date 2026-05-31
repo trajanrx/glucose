@@ -1,0 +1,35 @@
+{
+  "name": "glucose-tracker",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "supabase": "HOME=.supabase-home supabase",
+    "supabase:link": "HOME=.supabase-home supabase link",
+    "supabase:db:push": "HOME=.supabase-home supabase db push"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "@types/react": "^19.2.15",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.2",
+    "supabase": "^2.102.0",
+    "typescript": "~6.0.2",
+    "vite": "^8.0.12"
+  },
+  "dependencies": {
+    "@headlessui/react": "^2.2.10",
+    "@supabase/supabase-js": "^2.106.2",
+    "@tremor/react": "^3.18.7",
+    "autoprefixer": "^10.5.0",
+    "postcss": "^8.5.15",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "react-router-dom": "^7.16.0",
+    "recharts": "^3.8.1",
+    "tailwindcss": "^3.4.19"
+  }
+}
