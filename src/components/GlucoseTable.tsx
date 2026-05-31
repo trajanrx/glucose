@@ -27,6 +27,7 @@ export default function GlucoseTable({ readings }: Props) {
               {READING_KEYS.map(key => (
                 <TableHeaderCell key={key}>{READING_LABELS[key]}</TableHeaderCell>
               ))}
+              <TableHeaderCell>Desayuno</TableHeaderCell>
               <TableHeaderCell>Comida</TableHeaderCell>
               <TableHeaderCell>Cena</TableHeaderCell>
             </TableRow>
@@ -34,7 +35,7 @@ export default function GlucoseTable({ readings }: Props) {
           <TableBody>
             {readings.length === 0 && (
               <TableRow>
-                <TableCell colSpan={8} className="text-center text-gray-400">Sin registros aún</TableCell>
+                <TableCell colSpan={9} className="text-center text-gray-400">Sin registros aún</TableCell>
               </TableRow>
             )}
             {readings.map(r => (
@@ -43,6 +44,9 @@ export default function GlucoseTable({ readings }: Props) {
                 {READING_KEYS.map(key => (
                   <TableCell key={key}><GlucoseBadge value={r[key]} /></TableCell>
                 ))}
+                <TableCell className="max-w-xs whitespace-pre-wrap text-sm text-gray-600">
+                  {r.breakfast_notes || <span className="text-gray-300">—</span>}
+                </TableCell>
                 <TableCell className="max-w-xs whitespace-pre-wrap text-sm text-gray-600">
                   {r.meal_notes || <span className="text-gray-300">—</span>}
                 </TableCell>

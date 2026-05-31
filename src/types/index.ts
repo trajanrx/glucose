@@ -7,6 +7,7 @@ export interface GlucoseReading {
   post_meal: number | null
   pre_dinner: number | null
   post_dinner: number | null
+  breakfast_notes: string | null
   meal_notes: string | null
   dinner_notes: string | null
   created_at: string

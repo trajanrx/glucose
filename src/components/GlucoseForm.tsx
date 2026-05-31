@@ -20,6 +20,7 @@ const EMPTY_VALUES: Record<ReadingKey, number | undefined> = {
 export default function GlucoseForm({ onSaved }: Props) {
   const { user } = useAuth()
   const [date, setDate] = useState(() => new Date().toISOString().split('T')[0])
+  const [breakfastNotes, setBreakfastNotes] = useState('')
   const [mealNotes, setMealNotes] = useState('')
   const [dinnerNotes, setDinnerNotes] = useState('')
   const [values, setValues] = useState<Record<ReadingKey, number | undefined>>(EMPTY_VALUES)
@@ -50,11 +51,13 @@ export default function GlucoseForm({ onSaved }: Props) {
             pre_dinner: data.pre_dinner ?? undefined,
             post_dinner: data.post_dinner ?? undefined,
           })
+          setBreakfastNotes(data.breakfast_notes ?? '')
           setMealNotes(data.meal_notes ?? '')
           setDinnerNotes(data.dinner_notes ?? '')
         } else {
           setExistingId(null)
           setValues(EMPTY_VALUES)
+          setBreakfastNotes('')
           setMealNotes('')
           setDinnerNotes('')
         }
@@ -77,6 +80,7 @@ export default function GlucoseForm({ onSaved }: Props) {
       post_meal: values.post_meal ?? null,
       pre_dinner: values.pre_dinner ?? null,
       post_dinner: values.post_dinner ?? null,
+      breakfast_notes: breakfastNotes.trim() || null,
       meal_notes: mealNotes.trim() || null,
       dinner_notes: dinnerNotes.trim() || null,
     }
@@ -137,7 +141,17 @@ export default function GlucoseForm({ onSaved }: Props) {
           </div>
         </div>
 
-        <div className="px-4 py-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="px-4 py-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div>
+            <label className={labelCls}>¿Qué has desayunado?</label>
+            <textarea
+              value={breakfastNotes}
+              onChange={e => setBreakfastNotes(e.target.value)}
+              rows={3}
+              placeholder="Ej. tostada, fruta, cafe..."
+              className={`${inputCls} resize-none`}
+            />
+          </div>
           <div>
             <label className={labelCls}>¿Qué has comido?</label>
             <textarea
