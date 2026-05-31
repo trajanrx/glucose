@@ -141,7 +141,7 @@ export default function GlucoseForm({ onSaved }: Props) {
           </div>
         </div>
 
-        <div className="px-4 py-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="px-4 py-4 space-y-4">
           <div>
             <label className={labelCls}>¿Qué has desayunado?</label>
             <textarea
