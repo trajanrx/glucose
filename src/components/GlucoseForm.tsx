@@ -60,25 +60,27 @@ export default function GlucoseForm({ onSaved }: Props) {
           .select('*')
           .eq('user_id', user.id)
           .eq('date', date)
-          .maybeSingle()
+          .order('created_at', { ascending: false })
+          .limit(1)
 
         if (ignoreResult) return
+        const reading = data?.[0]
 
         if (error) {
           setError(error.message)
           clearForm()
-        } else if (data) {
-          setExistingId(data.id)
+        } else if (reading) {
+          setExistingId(reading.id)
           setValues({
-            fasting: data.fasting ?? undefined,
-            pre_meal: data.pre_meal ?? undefined,
-            post_meal: data.post_meal ?? undefined,
-            pre_dinner: data.pre_dinner ?? undefined,
-            post_dinner: data.post_dinner ?? undefined,
+            fasting: reading.fasting ?? undefined,
+            pre_meal: reading.pre_meal ?? undefined,
+            post_meal: reading.post_meal ?? undefined,
+            pre_dinner: reading.pre_dinner ?? undefined,
+            post_dinner: reading.post_dinner ?? undefined,
           })
-          setBreakfastNotes(data.breakfast_notes ?? '')
-          setMealNotes(data.meal_notes ?? '')
-          setDinnerNotes(data.dinner_notes ?? '')
+          setBreakfastNotes(reading.breakfast_notes ?? '')
+          setMealNotes(reading.meal_notes ?? '')
+          setDinnerNotes(reading.dinner_notes ?? '')
         } else {
           clearForm()
         }
