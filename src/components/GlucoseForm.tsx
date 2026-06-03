@@ -12,9 +12,9 @@ interface Props {
 const inputCls = 'block w-full rounded-tremor-small border border-tremor-border bg-tremor-background px-3 py-2 text-sm text-tremor-content-strong shadow-tremor-input placeholder:text-tremor-content-subtle focus:border-tremor-brand focus:outline-none focus:ring-2 focus:ring-tremor-brand-muted'
 const labelCls = 'mb-1.5 block text-tremor-default font-medium text-tremor-content-strong'
 
-const EMPTY_VALUES: Record<ReadingKey, number | undefined> = {
-  fasting: undefined, pre_meal: undefined, post_meal: undefined,
-  pre_dinner: undefined, post_dinner: undefined,
+const EMPTY_VALUES: Record<ReadingKey, number | null> = {
+  fasting: null, pre_meal: null, post_meal: null,
+  pre_dinner: null, post_dinner: null,
 }
 
 const getEmptyValues = () => ({ ...EMPTY_VALUES })
@@ -25,7 +25,7 @@ export default function GlucoseForm({ onSaved }: Props) {
   const [breakfastNotes, setBreakfastNotes] = useState('')
   const [mealNotes, setMealNotes] = useState('')
   const [dinnerNotes, setDinnerNotes] = useState('')
-  const [values, setValues] = useState<Record<ReadingKey, number | undefined>>(getEmptyValues)
+  const [values, setValues] = useState<Record<ReadingKey, number | null>>(getEmptyValues)
   const [existingId, setExistingId] = useState<string | null>(null)
   const [checking, setChecking] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -72,11 +72,11 @@ export default function GlucoseForm({ onSaved }: Props) {
         } else if (reading) {
           setExistingId(reading.id)
           setValues({
-            fasting: reading.fasting ?? undefined,
-            pre_meal: reading.pre_meal ?? undefined,
-            post_meal: reading.post_meal ?? undefined,
-            pre_dinner: reading.pre_dinner ?? undefined,
-            post_dinner: reading.post_dinner ?? undefined,
+            fasting: reading.fasting,
+            pre_meal: reading.pre_meal,
+            post_meal: reading.post_meal,
+            pre_dinner: reading.pre_dinner,
+            post_dinner: reading.post_dinner,
           })
           setBreakfastNotes(reading.breakfast_notes ?? '')
           setMealNotes(reading.meal_notes ?? '')
@@ -169,7 +169,7 @@ export default function GlucoseForm({ onSaved }: Props) {
                   placeholder="—"
                   min={0}
                   max={600}
-                  value={values[key]}
+                  value={values[key] ?? ''}
                   onValueChange={v => setValues(prev => ({ ...prev, [key]: v }))}
                 />
               </div>
