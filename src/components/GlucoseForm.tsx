@@ -17,32 +17,57 @@ const EMPTY_VALUES: Record<ReadingKey, number | undefined> = {
   pre_dinner: undefined, post_dinner: undefined,
 }
 
+const getEmptyValues = () => ({ ...EMPTY_VALUES })
+
 export default function GlucoseForm({ onSaved }: Props) {
   const { user } = useAuth()
   const [date, setDate] = useState(() => new Date().toISOString().split('T')[0])
   const [breakfastNotes, setBreakfastNotes] = useState('')
   const [mealNotes, setMealNotes] = useState('')
   const [dinnerNotes, setDinnerNotes] = useState('')
-  const [values, setValues] = useState<Record<ReadingKey, number | undefined>>(EMPTY_VALUES)
+  const [values, setValues] = useState<Record<ReadingKey, number | undefined>>(getEmptyValues)
   const [existingId, setExistingId] = useState<string | null>(null)
   const [checking, setChecking] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
 
+  const clearForm = () => {
+    setExistingId(null)
+    setValues(getEmptyValues())
+    setBreakfastNotes('')
+    setMealNotes('')
+    setDinnerNotes('')
+  }
+
   useEffect(() => {
-    if (!user) return
+    if (!user) {
+      clearForm()
+      setChecking(false)
+      return
+    }
+
+    let ignoreResult = false
+
     setChecking(true)
     setSuccess(false)
     setError(null)
-    supabase
-      .from('glucose_readings')
-      .select('*')
-      .eq('user_id', user.id)
-      .eq('date', date)
-      .maybeSingle()
-      .then(({ data }) => {
-        if (data) {
+
+    const loadReadingForDate = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('glucose_readings')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('date', date)
+          .maybeSingle()
+
+        if (ignoreResult) return
+
+        if (error) {
+          setError(error.message)
+          clearForm()
+        } else if (data) {
           setExistingId(data.id)
           setValues({
             fasting: data.fasting ?? undefined,
@@ -55,14 +80,23 @@ export default function GlucoseForm({ onSaved }: Props) {
           setMealNotes(data.meal_notes ?? '')
           setDinnerNotes(data.dinner_notes ?? '')
         } else {
-          setExistingId(null)
-          setValues(EMPTY_VALUES)
-          setBreakfastNotes('')
-          setMealNotes('')
-          setDinnerNotes('')
+          clearForm()
         }
-        setChecking(false)
-      })
+      } catch (error) {
+        if (!ignoreResult) {
+          setError(error instanceof Error ? error.message : 'No se pudo comprobar la fecha seleccionada.')
+          clearForm()
+        }
+      } finally {
+        if (!ignoreResult) setChecking(false)
+      }
+    }
+
+    loadReadingForDate()
+
+    return () => {
+      ignoreResult = true
+    }
   }, [date, user])
 
   const handleSubmit = async (e: React.FormEvent) => {
